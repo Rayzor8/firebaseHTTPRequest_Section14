@@ -15,7 +15,7 @@ function App() {
       setError(null); // reset state error to null
       try {
          const fetchData = fetch(
-            `${process.env.REACT_APP_API_URL}/movies.json`
+            `${process.env.REACT_APP_API_URL}`
          );
          const response = await fetchData;
 
@@ -47,7 +47,7 @@ function App() {
 
    const addMovieHandler = async (movie) => {
       const response = await fetch(
-         `${process.env.REACT_APP_API_URL}/movies.json`,
+         `${process.env.REACT_APP_API_URL}`,
          {
             method: 'POST',
             body: JSON.stringify(movie),
