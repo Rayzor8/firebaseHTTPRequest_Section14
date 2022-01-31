@@ -14,7 +14,9 @@ function App() {
       setIsLoading(true);
       setError(null); // reset state error to null
       try {
-         const fetchData = fetch('https://swapi.dev/api/films');
+         const fetchData = fetch(
+            `${process.env.REACT_APP_API_URL}/movies.json`
+         );
          const response = await fetchData;
 
          if (!response.ok) {
@@ -22,15 +24,17 @@ function App() {
          }
 
          const jsonData = await response.json();
-         const newFormatMoviesData = jsonData.results.map((movie) => {
-            return {
-               id: movie.episode_id,
-               title: movie.title,
-               openingText: movie.opening_crawl,
-               releaseDate: movie.release_date,
-            };
-         });
-         setMovies(newFormatMoviesData);
+         let loadedMovies = [];
+
+         for (const key in jsonData) {
+            loadedMovies.unshift({
+               id: key,
+               title: jsonData[key].title,
+               openingText: jsonData[key].openingText,
+               releaseDate: jsonData[key].releaseDate,
+            });
+         }
+         setMovies(loadedMovies);
       } catch (err) {
          setError(err.message);
       }
@@ -40,10 +44,20 @@ function App() {
    useEffect(() => {
       fetchMoviesHandler();
    }, [fetchMoviesHandler]);
-   
 
-   const addMovieHandler = (movie) => {
-      console.log(movie);
+   const addMovieHandler = async (movie) => {
+      const response = await fetch(
+         `${process.env.REACT_APP_API_URL}/movies.json`,
+         {
+            method: 'POST',
+            body: JSON.stringify(movie),
+            headers: {
+               'Content-Type': 'application/json',
+            },
+         }
+      );
+      const data = await response.json();
+      console.log(data);
    };
 
    let content;

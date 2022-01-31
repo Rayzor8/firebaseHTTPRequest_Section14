@@ -35,9 +35,9 @@ function AddMovie(props) {
          </div>
          <div className={classes.control}>
             <label htmlFor="date">Release Date</label>
-            <input type="text" id="date" ref={releaseDateRef} />
+            <input type="date" id="date" ref={releaseDateRef} />
          </div>
-         <button>Add Movie</button>
+         <button>Add Your Movie</button>
       </form>
    );
 }
