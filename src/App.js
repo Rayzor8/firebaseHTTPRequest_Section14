@@ -1,61 +1,22 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React from 'react';
 import MoviesList from './components/MoviesList';
 import './App.css';
 import WelcomePage from './components/WelcomePage';
 import LoadingSpinner from './components/LoadingSpinner';
 import AddMovie from './components/AddMovie';
+import useFetchMovies from './hooks/useFetchMovies';
 
 function App() {
-   const [movies, setMovies] = useState([]);
-   const [isLoading, setIsLoading] = useState(false);
-   const [error, setError] = useState(null);
-
-   const fetchMoviesHandler = useCallback(async () => {
-      setIsLoading(true);
-      setError(null); // reset state error to null
-      try {
-         const fetchData = fetch(
-            `${process.env.REACT_APP_API_URL}`
-         );
-         const response = await fetchData;
-
-         if (!response.ok) {
-            throw new Error('Something went wrong!');
-         }
-
-         const jsonData = await response.json();
-         let loadedMovies = [];
-
-         for (const key in jsonData) {
-            loadedMovies.unshift({
-               id: key,
-               title: jsonData[key].title,
-               openingText: jsonData[key].openingText,
-               releaseDate: jsonData[key].releaseDate,
-            });
-         }
-         setMovies(loadedMovies);
-      } catch (err) {
-         setError(err.message);
-      }
-      setIsLoading(false);
-   }, []);
-
-   useEffect(() => {
-      fetchMoviesHandler();
-   }, [fetchMoviesHandler]);
+   const { movies, isLoading, error, fetchMoviesHandler } = useFetchMovies();
 
    const addMovieHandler = async (movie) => {
-      const response = await fetch(
-         `${process.env.REACT_APP_API_URL}`,
-         {
-            method: 'POST',
-            body: JSON.stringify(movie),
-            headers: {
-               'Content-Type': 'application/json',
-            },
-         }
-      );
+      const response = await fetch(`${process.env.REACT_APP_API_URL}`, {
+         method: 'POST',
+         body: JSON.stringify(movie),
+         headers: {
+            'Content-Type': 'application/json',
+         },
+      });
       const data = await response.json();
       console.log(data);
    };
